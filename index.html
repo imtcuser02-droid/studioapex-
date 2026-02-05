@@ -20,22 +20,20 @@
 
         video { height: 75vh; width: auto; max-width: 100%; transition: filter 0.2s; z-index: 2; object-fit: contain; }
 
-        /* Mobile Adjustments for Videos */
         @media (max-width: 768px) {
             video { height: auto; width: 90vw; }
-            #start-gate h1 { font-size: 50px !important; letter-spacing: 8px !important; }
         }
 
-        /* Level 1 Scratch */
+        /* Level 1 Specific */
         #level-1 video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         #canvas-l1 { position: absolute; top: 0; left: 0; z-index: 10; cursor: crosshair; touch-action: none; }
 
-        /* Level 2: Spotlight */
+        /* Level 2: Immersive Spotlight */
         #level-2 { background: var(--cartier-red) !important; }
         #v2-container { 
             position: absolute; 
-            width: 120px; 
-            height: 120px; 
+            width: 150px; 
+            height: 150px; 
             overflow: hidden; 
             border-radius: 50%; 
             border: 1px solid var(--white); 
@@ -44,33 +42,35 @@
             filter: brightness(0); 
             transition: filter 0.2s ease, left 1.5s ease-in-out, top 1.5s ease-in-out;
         }
-        #v2-container video { height: 120px; width: auto; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-        #spot-mask { position: absolute; inset: 0; background: radial-gradient(circle 100px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.95) 100%); z-index: 15; pointer-events: none; }
+        #v2-container video { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+        #spot-mask { position: absolute; inset: 0; background: radial-gradient(circle 120px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.98) 100%); z-index: 15; pointer-events: none; }
 
         /* Level 3 Choice Menu */
         #l3-choice-menu { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .choice-btn { margin: 10px; padding: 12px 30px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
+        .choice-btn { margin: 10px; padding: 12px 30px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; cursor: pointer; }
 
         /* Level 4: Petting */
         #pet-zone { position: absolute; width: 80%; height: 60%; z-index: 30; touch-action: none; }
         .purr-meter { width: 250px; height: 4px; background: rgba(255,255,255,0.1); margin-top: 20px; border-radius: 10px; overflow: hidden; z-index: 10; }
         #purr-fill { width: 0%; height: 100%; background: var(--gold); }
 
-        /* Level 5: Puzzle (Square on Mobile) */
+        /* Level 5: Fixed Puzzle */
         #level-5 { background: var(--white) !important; color: var(--cartier-red); }
         #puzzle-board { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            width: 85vw; 
-            height: 85vw; 
-            max-width: 500px;
-            max-height: 500px;
+            width: 80vh; 
+            height: 80vh; 
+            max-width: 90vw;
+            max-height: 90vw;
             gap: 2px; 
             background: var(--cartier-red); 
             border: 2px solid var(--cartier-red); 
         }
-        .tile video { position: absolute; width: 300%; height: 300%; pointer-events: none; }
+        .tile { position: relative; overflow: hidden; cursor: pointer; background: #fff; }
+        .tile video { position: absolute; width: 300.5%; height: 300.5%; pointer-events: none; object-fit: cover; }
+        .tile.selected { outline: 4px solid var(--gold); z-index: 10; }
 
         /* Gates */
         #start-gate { 
@@ -81,22 +81,22 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
+            cursor: pointer;
         }
-        .start-btn { padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="start-gate" onclick="showStartButton()"></div>
 <div id="btn-gate" style="position:fixed; inset:0; z-index:1000; display:none; flex-direction:column; justify-content:center; align-items:center; background:var(--black);">
-    <button class="start-btn" onclick="nextLevel()">Play Odyssey</button>
+    <button class="start-btn" style="padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; cursor: pointer;" onclick="nextLevel()">Play Odyssey</button>
 </div>
 <div id="hud">GAME: <span id="lvl-num">1</span>/5</div>
 
 <div class="game-level" id="level-1">
     <video playsinline muted autoplay loop><source src="standing.mp4" type="video/mp4"></video>
     <canvas id="canvas-l1"></canvas>
-    <button style="display:none; position:absolute; bottom:10%; z-index:50;" id="n1" onclick="nextLevel()" class="start-btn">Enter Boutique</button>
+    <button style="display:none; position:absolute; bottom:10%; z-index:50;" id="n1" onclick="nextLevel()" class="choice-btn">Enter Boutique</button>
 </div>
 
 <div class="game-level" id="level-2">
@@ -104,19 +104,19 @@
     <div id="v2-container" onclick="catchPanther()">
         <video playsinline muted autoplay loop><source src="jumping.mp4" type="video/mp4"></video>
     </div>
-    <div id="l2-text" style="color:var(--white); z-index:20; position:absolute; bottom:15%; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Find the Panthère (0/3)</div>
+    <div id="l2-text" style="color:var(--white); z-index:20; position:absolute; bottom:10%; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Find the Panthère (0/3)</div>
 </div>
 
 <div class="game-level" id="level-3">
-    <video id="v3-fullscreen" playsinline></video>
+    <video id="v3-fullscreen" playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:none;"></video>
     <div class="l3-ui-overlay" id="l3-ui-container" style="text-align:center; z-index:10;">
-        <div class="input-display" id="l3-input" style="font-size:24px; margin-bottom:10px;">_</div>
-        <div style="font-size:10px; letter-spacing:2px;">TAP TO TYPE: RED | WHITE | GOLD</div>
+        <div class="input-display" id="l3-input" style="font-size:32px; margin-bottom:10px;">_</div>
+        <div style="font-size:12px; letter-spacing:2px;">TYPE: RED | WHITE | GOLD</div>
         <input type="text" id="mobile-input" style="opacity:0; position:absolute; pointer-events:none;">
     </div>
     <div id="l3-choice-menu">
         <button class="choice-btn" onclick="resetL3()">Another Color</button>
-        <button class="choice-btn" onclick="nextLevel()">Game 4</button>
+        <button class="choice-btn" onclick="nextLevel()">Proceed to Game 4</button>
     </div>
 </div>
 
@@ -124,17 +124,17 @@
     <video id="v4" playsinline autoplay loop><source id="s4" src="standing.mp4" type="video/mp4"></video>
     <div id="pet-zone"></div>
     <div class="purr-meter"><div id="purr-fill"></div></div>
-    <div style="color:var(--gold); margin-top:10px; font-size:10px; letter-spacing:1px;">Pet the Panthère</div>
+    <div style="color:var(--gold); margin-top:10px; font-size:12px; letter-spacing:1px;">Pet the Panthère</div>
 </div>
 
 <div class="game-level" id="level-5">
     <div id="puzzle-board"></div>
-    <div class="puzzle-text" id="puzzle-status" style="margin-top:20px; font-size:12px;">Restore the Panthère</div>
+    <div class="puzzle-text" id="puzzle-status" style="margin-top:20px; font-size:14px; letter-spacing:2px; font-weight:bold;">RESTORE THE PANTHÈRE</div>
 </div>
 
 <div id="end-page" style="position:fixed; inset:0; z-index:1000; display:none; flex-direction:column; justify-content:center; align-items:center; background:var(--cartier-red); text-align:center;">
-    <h1 style="letter-spacing:5px; font-size:24px;">MASTERY ACHIEVED</h1>
-    <button class="start-btn" style="border-color:white; color:white; margin-top:20px;" onclick="location.reload()">Replay</button>
+    <h1 style="letter-spacing:5px; font-size:32px; color: white;">MASTERY ACHIEVED</h1>
+    <button class="choice-btn" style="border-color:white; color:white; margin-top:20px;" onclick="location.reload()">Replay Odyssey</button>
 </div>
 
 <script>
@@ -145,6 +145,7 @@ let puzzle_order = [0,1,2,3,4,5,6,7,8];
 let selected_tile = null;
 let isLevelTransitioning = false;
 let runInterval;
+let l3_buffer = "";
 
 function showStartButton() {
     document.getElementById('start-gate').style.display = 'none';
@@ -174,11 +175,10 @@ function initL1() {
     c.width = window.innerWidth; c.height = window.innerHeight;
     ctx.fillStyle = '#801B2B'; ctx.fillRect(0,0,c.width,c.height);
     ctx.globalCompositeOperation = 'destination-out';
-    
     const handleMove = (e) => {
         const x = e.touches ? e.touches[0].clientX : e.clientX;
         const y = e.touches ? e.touches[0].clientY : e.clientY;
-        ctx.beginPath(); ctx.arc(x, y, 60, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 70, 0, Math.PI * 2); ctx.fill();
         document.getElementById('n1').style.display = 'block';
     };
     c.addEventListener('mousemove', handleMove);
@@ -188,31 +188,26 @@ function initL1() {
 function startPantherRun() {
     document.getElementById('v2-container').style.display = 'block';
     movePanther();
-    runInterval = setInterval(movePanther, 2200);
+    runInterval = setInterval(movePanther, 2000);
 }
 
 function movePanther() {
     if(currentLevel !== 2) { clearInterval(runInterval); return; }
     const cont = document.getElementById('v2-container');
-    cont.style.left = (Math.random() * (window.innerWidth - 140) + 70) + 'px';
-    cont.style.top = (Math.random() * (window.innerHeight - 140) + 70) + 'px';
+    cont.style.left = (Math.random() * (window.innerWidth - 160) + 80) + 'px';
+    cont.style.top = (Math.random() * (window.innerHeight - 160) + 80) + 'px';
 }
 
-const updateSpotlight = (e) => {
+window.addEventListener('mousemove', (e) => {
     if(currentLevel === 2) {
-        const x = e.touches ? e.touches[0].clientX : e.clientX;
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
-        document.documentElement.style.setProperty('--x', x + 'px');
-        document.documentElement.style.setProperty('--y', y + 'px');
+        document.documentElement.style.setProperty('--x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--y', e.clientY + 'px');
         const cont = document.getElementById('v2-container');
         const rect = cont.getBoundingClientRect();
-        const dist = Math.hypot(x - (rect.left + 60), y - (rect.top + 60));
-        cont.style.filter = dist < 100 ? "brightness(1.5)" : "brightness(0)";
+        const dist = Math.hypot(e.clientX - (rect.left + 75), e.clientY - (rect.top + 75));
+        cont.style.filter = dist < 120 ? "brightness(1.5)" : "brightness(0)";
     }
-};
-window.addEventListener('mousemove', updateSpotlight);
-window.addEventListener('touchstart', updateSpotlight);
-window.addEventListener('touchmove', updateSpotlight);
+});
 
 function catchPanther() {
     l2_finds++;
@@ -220,36 +215,49 @@ function catchPanther() {
     if(l2_finds >= 3) { clearInterval(runInterval); setTimeout(nextLevel, 500); } else movePanther();
 }
 
-// Level 3 Mobile Typing
-document.getElementById('mobile-input').addEventListener('input', (e) => {
-    if(currentLevel === 3) {
-        const val = e.target.value.toUpperCase();
-        document.getElementById('l3-input').innerText = val || "_";
-        let vid = "";
-        if(val.includes("RED")) vid = "redpaint.mp4";
-        else if(val.includes("WHITE")) vid = "whitepaint.mp4";
-        else if(val.includes("GOLD")) vid = "goldpaint.mp4";
-
-        if(vid) {
-            isLevelTransitioning = true;
-            e.target.value = ""; e.target.blur();
-            const v3 = document.getElementById('v3-fullscreen');
-            document.getElementById('l3-ui-container').style.display = 'none';
-            v3.style.display = 'block'; v3.src = vid; v3.play();
-            v3.onended = () => document.getElementById('l3-choice-menu').style.display = 'flex';
+// Level 3 Unified Input (Laptop + Mobile)
+window.addEventListener('keydown', (e) => {
+    if(currentLevel === 3 && !isLevelTransitioning) {
+        if(e.key.length === 1 && e.key.match(/[a-z]/i)) {
+            l3_buffer += e.key.toUpperCase();
+            processType(l3_buffer);
         }
     }
 });
 
+document.getElementById('mobile-input').addEventListener('input', (e) => {
+    if(currentLevel === 3) {
+        l3_buffer = e.target.value.toUpperCase();
+        processType(l3_buffer);
+    }
+});
+
+function processType(val) {
+    document.getElementById('l3-input').innerText = val || "_";
+    let vid = "";
+    if(val.includes("RED")) vid = "redpaint.mp4";
+    else if(val.includes("WHITE")) vid = "whitepaint.mp4";
+    else if(val.includes("GOLD")) vid = "goldpaint.mp4";
+
+    if(vid) {
+        isLevelTransitioning = true;
+        document.getElementById('mobile-input').value = "";
+        document.getElementById('mobile-input').blur();
+        const v3 = document.getElementById('v3-fullscreen');
+        document.getElementById('l3-ui-container').style.display = 'none';
+        v3.style.display = 'block'; v3.src = vid; v3.play();
+        v3.onended = () => document.getElementById('l3-choice-menu').style.display = 'flex';
+    }
+}
+
 function resetL3() {
-    isLevelTransitioning = false;
+    l3_buffer = ""; isLevelTransitioning = false;
     document.getElementById('l3-input').innerText = "_";
     document.getElementById('v3-fullscreen').style.display = 'none';
     document.getElementById('l3-choice-menu').style.display = 'none';
     document.getElementById('l3-ui-container').style.display = 'block';
 }
 
-// Level 4 Mobile Petting
 const petHandler = () => {
     if(currentLevel === 4 && !isLevelTransitioning) {
         pet_intensity += 2;
@@ -273,8 +281,7 @@ function renderPuzzle() {
     board.innerHTML = '';
     puzzle_order.forEach((pos, slot) => {
         const tile = document.createElement('div');
-        tile.className = 'tile'; tile.style.position = 'relative'; tile.style.overflow = 'hidden';
-        if(selected_tile === slot) tile.style.outline = '2px solid red';
+        tile.className = 'tile' + (selected_tile === slot ? ' selected' : '');
         const v = document.createElement('video');
         v.src = 'standing.mp4'; v.autoplay = true; v.loop = true; v.muted = true;
         v.style.top = `-${Math.floor(pos / 3) * 100}%`; v.style.left = `-${(pos % 3) * 100}%`;
