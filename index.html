@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cartier | The Panthère Odyssey</title>
     <style>
         :root { 
@@ -10,78 +11,66 @@
             --white: #ffffff; 
             --black: #000000; 
         }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--black); font-family: "Times New Roman", serif; overflow: hidden; color: white; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--black); font-family: "Times New Roman", serif; overflow: hidden; color: white; -webkit-tap-highlight-color: transparent; }
 
         /* HUD */
-        #hud { position: fixed; top: 20px; left: 20px; color: var(--gold); z-index: 100; letter-spacing: 3px; font-size: 12px; display: none; }
+        #hud { position: fixed; top: 20px; left: 20px; color: var(--gold); z-index: 100; letter-spacing: 3px; font-size: 10px; display: none; }
         .game-level { display: none; width: 100vw; height: 100vh; position: relative; flex-direction: column; align-items: center; justify-content: center; transition: background 0.5s ease; }
         .active { display: flex; }
 
-        video { height: 75vh; width: auto; transition: filter 0.2s; z-index: 2; }
+        video { height: 75vh; width: auto; max-width: 100%; transition: filter 0.2s; z-index: 2; object-fit: contain; }
 
-        /* Level 1 Specific: Full Background Video */
+        /* Mobile Adjustments for Videos */
+        @media (max-width: 768px) {
+            video { height: auto; width: 90vw; }
+            #start-gate h1 { font-size: 50px !important; letter-spacing: 8px !important; }
+        }
+
+        /* Level 1 Scratch */
         #level-1 video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        #canvas-l1 { position: absolute; top: 0; left: 0; z-index: 10; cursor: crosshair; }
+        #canvas-l1 { position: absolute; top: 0; left: 0; z-index: 10; cursor: crosshair; touch-action: none; }
 
-        /* Level 2: Slow & Smooth Run Hunt */
-        #level-2 { background: var(--cartier-red) !important; cursor: none; }
+        /* Level 2: Spotlight */
+        #level-2 { background: var(--cartier-red) !important; }
         #v2-container { 
             position: absolute; 
-            width: 140px; 
-            height: 140px; 
+            width: 120px; 
+            height: 120px; 
             overflow: hidden; 
             border-radius: 50%; 
             border: 1px solid var(--white); 
-            cursor: pointer; 
             z-index: 20; 
             display: none; 
             filter: brightness(0); 
             transition: filter 0.2s ease, left 1.5s ease-in-out, top 1.5s ease-in-out;
         }
-        #v2-container video { height: 140px; width: auto; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-        
-        #spot-mask { 
-            position: absolute; 
-            inset: 0; 
-            background: radial-gradient(circle 130px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.95) 100%); 
-            z-index: 15; 
-            pointer-events: none; 
-            transition: background 0.05s linear; 
-        }
+        #v2-container video { height: 120px; width: auto; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        #spot-mask { position: absolute; inset: 0; background: radial-gradient(circle 100px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.95) 100%); z-index: 15; pointer-events: none; }
 
-        /* Level 3: Full Screen Immersive UI */
-        #level-3 { background: var(--cartier-red); }
-        #v3-fullscreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; display: none; }
-        .l3-ui-overlay { z-index: 10; text-align: center; }
-        .input-display { font-size: 32px; color: var(--white); letter-spacing: 10px; margin: 20px; height: 40px; text-transform: uppercase; }
-        
         /* Level 3 Choice Menu */
         #l3-choice-menu { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .choice-btn { margin: 15px; padding: 15px 45px; border: 1px solid var(--gold); color: var(--gold); background: none; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; font-size: 14px; }
-        .choice-btn:hover { background: var(--gold); color: black; }
+        .choice-btn { margin: 10px; padding: 12px 30px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
 
         /* Level 4: Petting */
-        #pet-zone { position: absolute; width: 500px; height: 500px; z-index: 30; cursor: pointer; }
-        .purr-meter { width: 300px; height: 6px; background: rgba(255,255,255,0.1); margin-top: 20px; border-radius: 10px; overflow: hidden; z-index: 10; }
+        #pet-zone { position: absolute; width: 80%; height: 60%; z-index: 30; touch-action: none; }
+        .purr-meter { width: 250px; height: 4px; background: rgba(255,255,255,0.1); margin-top: 20px; border-radius: 10px; overflow: hidden; z-index: 10; }
         #purr-fill { width: 0%; height: 100%; background: var(--gold); }
 
-        /* Level 5: Clean White & Cartier Red Puzzle */
+        /* Level 5: Puzzle (Square on Mobile) */
         #level-5 { background: var(--white) !important; color: var(--cartier-red); }
         #puzzle-board { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            width: 60vh; 
-            height: 60vh; 
+            width: 85vw; 
+            height: 85vw; 
+            max-width: 500px;
+            max-height: 500px;
             gap: 2px; 
             background: var(--cartier-red); 
-            border: 4px solid var(--cartier-red); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid var(--cartier-red); 
         }
-        .tile { position: relative; overflow: hidden; cursor: pointer; background: var(--white); }
         .tile video { position: absolute; width: 300%; height: 300%; pointer-events: none; }
-        .tile.selected { outline: 3px solid var(--cartier-red); z-index: 10; }
-        .puzzle-text { margin-top: 30px; letter-spacing: 4px; text-transform: uppercase; font-size: 14px; color: var(--cartier-red); font-weight: bold; }
 
         /* Gates */
         #start-gate { 
@@ -89,29 +78,25 @@
             display: flex; justify-content: center; align-items: center; 
             background-color: var(--cartier-red); 
             background-image: url('logo.jpeg');
-            background-size: contain; /* Shows the WHOLE image zoomed out */
+            background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            cursor: pointer; 
         }
-        
-        #btn-gate { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; background: var(--black); }
-        .start-btn { padding: 20px 60px; border: 1px solid var(--gold); color: var(--gold); background: none; cursor: pointer; text-transform: uppercase; letter-spacing: 5px; transition: 0.3s; }
-        .start-btn:hover { background: var(--gold); color: black; }
-        #end-page { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; background: var(--cartier-red); color: white; text-align: center; }
+        .start-btn { padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 3px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="start-gate" onclick="showStartButton()"></div>
-
-<div id="btn-gate"><button class="start-btn" onclick="nextLevel()">Play with the Panthère</button></div>
+<div id="btn-gate" style="position:fixed; inset:0; z-index:1000; display:none; flex-direction:column; justify-content:center; align-items:center; background:var(--black);">
+    <button class="start-btn" onclick="nextLevel()">Play Odyssey</button>
+</div>
 <div id="hud">GAME: <span id="lvl-num">1</span>/5</div>
 
 <div class="game-level" id="level-1">
     <video playsinline muted autoplay loop><source src="standing.mp4" type="video/mp4"></video>
     <canvas id="canvas-l1"></canvas>
-    <button style="display:none; position:absolute; bottom:50px; z-index:50;" id="n1" onclick="nextLevel()" class="start-btn">Enter Boutique</button>
+    <button style="display:none; position:absolute; bottom:10%; z-index:50;" id="n1" onclick="nextLevel()" class="start-btn">Enter Boutique</button>
 </div>
 
 <div class="game-level" id="level-2">
@@ -119,39 +104,37 @@
     <div id="v2-container" onclick="catchPanther()">
         <video playsinline muted autoplay loop><source src="jumping.mp4" type="video/mp4"></video>
     </div>
-    <div id="l2-text" style="color: var(--white); z-index: 20; position: absolute; bottom: 40px; text-transform: uppercase; letter-spacing: 2px;">Catch the running Panthère (Found: 0/3)</div>
+    <div id="l2-text" style="color:var(--white); z-index:20; position:absolute; bottom:15%; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Find the Panthère (0/3)</div>
 </div>
 
 <div class="game-level" id="level-3">
     <video id="v3-fullscreen" playsinline></video>
-    
-    <div class="l3-ui-overlay" id="l3-ui-container">
-        <div class="input-display" id="l3-input">_</div>
-        <div style="color: var(--white); letter-spacing: 2px;">TYPE: RED | WHITE | GOLD</div>
+    <div class="l3-ui-overlay" id="l3-ui-container" style="text-align:center; z-index:10;">
+        <div class="input-display" id="l3-input" style="font-size:24px; margin-bottom:10px;">_</div>
+        <div style="font-size:10px; letter-spacing:2px;">TAP TO TYPE: RED | WHITE | GOLD</div>
+        <input type="text" id="mobile-input" style="opacity:0; position:absolute; pointer-events:none;">
     </div>
-
     <div id="l3-choice-menu">
-        <div style="color: var(--gold); margin-bottom: 25px; letter-spacing: 5px; font-size: 18px;">THE ODYSSEY CONTINUES</div>
-        <button class="choice-btn" onclick="resetL3()">Explore Another Color</button>
-        <button class="choice-btn" onclick="nextLevel()">Proceed to Game 4</button>
+        <button class="choice-btn" onclick="resetL3()">Another Color</button>
+        <button class="choice-btn" onclick="nextLevel()">Game 4</button>
     </div>
 </div>
 
 <div class="game-level" id="level-4">
     <video id="v4" playsinline autoplay loop><source id="s4" src="standing.mp4" type="video/mp4"></video>
-    <div id="pet-zone" onmousemove="handlePet(event)"></div>
+    <div id="pet-zone"></div>
     <div class="purr-meter"><div id="purr-fill"></div></div>
-    <div style="color: var(--gold); margin-top: 10px; letter-spacing: 2px;">Pet the Panthère to hear him Purr</div>
+    <div style="color:var(--gold); margin-top:10px; font-size:10px; letter-spacing:1px;">Pet the Panthère</div>
 </div>
 
 <div class="game-level" id="level-5">
     <div id="puzzle-board"></div>
-    <div class="puzzle-text" id="puzzle-status">Restore the Panthère</div>
+    <div class="puzzle-text" id="puzzle-status" style="margin-top:20px; font-size:12px;">Restore the Panthère</div>
 </div>
 
-<div id="end-page">
-    <h1 style="color: var(--white); letter-spacing: 10px;">MASTERY ACHIEVED</h1>
-    <button class="start-btn" style="border-color: white; color: white;" onclick="location.reload()">Replay Odyssey</button>
+<div id="end-page" style="position:fixed; inset:0; z-index:1000; display:none; flex-direction:column; justify-content:center; align-items:center; background:var(--cartier-red); text-align:center;">
+    <h1 style="letter-spacing:5px; font-size:24px;">MASTERY ACHIEVED</h1>
+    <button class="start-btn" style="border-color:white; color:white; margin-top:20px;" onclick="location.reload()">Replay</button>
 </div>
 
 <script>
@@ -179,6 +162,9 @@ function nextLevel() {
 
     if(currentLevel === 1) initL1();
     if(currentLevel === 2) startPantherRun();
+    if(currentLevel === 3) {
+        document.getElementById('l3-ui-container').onclick = () => document.getElementById('mobile-input').focus();
+    }
     if(currentLevel === 5) initL5();
 }
 
@@ -186,102 +172,100 @@ function initL1() {
     const c = document.getElementById('canvas-l1');
     const ctx = c.getContext('2d');
     c.width = window.innerWidth; c.height = window.innerHeight;
-    ctx.fillStyle = '#801B2B'; 
-    ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle = '#801B2B'; ctx.fillRect(0,0,c.width,c.height);
     ctx.globalCompositeOperation = 'destination-out';
-    c.onmousemove = (e) => {
-        ctx.beginPath(); ctx.arc(e.clientX, e.clientY, 100, 0, Math.PI * 2); ctx.fill();
-        if(e.movementX > 2) document.getElementById('n1').style.display = 'block';
+    
+    const handleMove = (e) => {
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        ctx.beginPath(); ctx.arc(x, y, 60, 0, Math.PI * 2); ctx.fill();
+        document.getElementById('n1').style.display = 'block';
     };
+    c.addEventListener('mousemove', handleMove);
+    c.addEventListener('touchmove', handleMove);
 }
 
 function startPantherRun() {
-    const cont = document.getElementById('v2-container');
-    cont.style.display = 'block';
+    document.getElementById('v2-container').style.display = 'block';
     movePanther();
-    runInterval = setInterval(movePanther, 2000); 
+    runInterval = setInterval(movePanther, 2200);
 }
 
 function movePanther() {
     if(currentLevel !== 2) { clearInterval(runInterval); return; }
     const cont = document.getElementById('v2-container');
-    const x = Math.random() * (window.innerWidth - 300) + 150;
-    const y = Math.random() * (window.innerHeight - 300) + 150;
-    cont.style.left = x + 'px';
-    cont.style.top = y + 'px';
+    cont.style.left = (Math.random() * (window.innerWidth - 140) + 70) + 'px';
+    cont.style.top = (Math.random() * (window.innerHeight - 140) + 70) + 'px';
 }
 
-window.addEventListener('mousemove', (e) => {
+const updateSpotlight = (e) => {
     if(currentLevel === 2) {
-        document.documentElement.style.setProperty('--x', e.clientX + 'px');
-        document.documentElement.style.setProperty('--y', e.clientY + 'px');
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        document.documentElement.style.setProperty('--x', x + 'px');
+        document.documentElement.style.setProperty('--y', y + 'px');
         const cont = document.getElementById('v2-container');
         const rect = cont.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-        if (dist < 130) cont.style.filter = "brightness(1.5)";
-        else cont.style.filter = "brightness(0)";
+        const dist = Math.hypot(x - (rect.left + 60), y - (rect.top + 60));
+        cont.style.filter = dist < 100 ? "brightness(1.5)" : "brightness(0)";
     }
-});
+};
+window.addEventListener('mousemove', updateSpotlight);
+window.addEventListener('touchstart', updateSpotlight);
+window.addEventListener('touchmove', updateSpotlight);
 
 function catchPanther() {
-    const cont = document.getElementById('v2-container');
-    if (parseFloat(getComputedStyle(cont).filter.replace('brightness(', '')) > 0) {
-        l2_finds++;
-        document.getElementById('l2-text').innerText = `Catch the running Panthère (Found: ${l2_finds}/3)`;
-        if(l2_finds >= 3) {
-            clearInterval(runInterval);
-            setTimeout(nextLevel, 500);
-        } else movePanther();
-    }
+    l2_finds++;
+    document.getElementById('l2-text').innerText = `Find the Panthère (${l2_finds}/3)`;
+    if(l2_finds >= 3) { clearInterval(runInterval); setTimeout(nextLevel, 500); } else movePanther();
 }
 
-let l3_buffer = "";
-window.addEventListener('keydown', (e) => {
-    if(currentLevel === 3 && !isLevelTransitioning) {
-        if(e.key.length === 1 && e.key.match(/[a-z]/i)) {
-            l3_buffer += e.key.toUpperCase();
-            document.getElementById('l3-input').innerText = l3_buffer;
-            let vid = "";
-            if(l3_buffer.includes("RED")) vid = "redpaint.mp4";
-            else if (l3_buffer.includes("WHITE")) vid = "whitepaint.mp4";
-            else if (l3_buffer.includes("GOLD")) vid = "goldpaint.mp4";
+// Level 3 Mobile Typing
+document.getElementById('mobile-input').addEventListener('input', (e) => {
+    if(currentLevel === 3) {
+        const val = e.target.value.toUpperCase();
+        document.getElementById('l3-input').innerText = val || "_";
+        let vid = "";
+        if(val.includes("RED")) vid = "redpaint.mp4";
+        else if(val.includes("WHITE")) vid = "whitepaint.mp4";
+        else if(val.includes("GOLD")) vid = "goldpaint.mp4";
 
-            if(vid) {
-                isLevelTransitioning = true;
-                const v3 = document.getElementById('v3-fullscreen');
-                document.getElementById('l3-ui-container').style.display = 'none';
-                v3.style.display = 'block';
-                v3.src = vid; v3.play();
-                v3.onended = () => { document.getElementById('l3-choice-menu').style.display = 'flex'; };
-            }
-            if(l3_buffer.length > 8) l3_buffer = "";
+        if(vid) {
+            isLevelTransitioning = true;
+            e.target.value = ""; e.target.blur();
+            const v3 = document.getElementById('v3-fullscreen');
+            document.getElementById('l3-ui-container').style.display = 'none';
+            v3.style.display = 'block'; v3.src = vid; v3.play();
+            v3.onended = () => document.getElementById('l3-choice-menu').style.display = 'flex';
         }
     }
 });
 
 function resetL3() {
-    l3_buffer = ""; isLevelTransitioning = false;
+    isLevelTransitioning = false;
     document.getElementById('l3-input').innerText = "_";
     document.getElementById('v3-fullscreen').style.display = 'none';
     document.getElementById('l3-choice-menu').style.display = 'none';
     document.getElementById('l3-ui-container').style.display = 'block';
 }
 
-function handlePet() {
-    if(currentLevel !== 4 || isLevelTransitioning) return;
-    pet_intensity += 1.2;
-    document.getElementById('purr-fill').style.width = Math.min(pet_intensity, 100) + "%";
-    if(pet_intensity >= 100) {
-        isLevelTransitioning = true;
-        const v = document.getElementById('v4');
-        document.getElementById('s4').src = "purr.mp4";
-        v.muted = false; v.loop = false; v.load(); v.play();
-        v.onended = () => { nextLevel(); };
+// Level 4 Mobile Petting
+const petHandler = () => {
+    if(currentLevel === 4 && !isLevelTransitioning) {
+        pet_intensity += 2;
+        document.getElementById('purr-fill').style.width = Math.min(pet_intensity, 100) + "%";
+        if(pet_intensity >= 100) {
+            isLevelTransitioning = true;
+            const v = document.getElementById('v4');
+            document.getElementById('s4').src = "purr.mp4";
+            v.muted = false; v.loop = false; v.load(); v.play();
+            v.onended = () => nextLevel();
+        }
     }
-}
-setInterval(() => { if(pet_intensity > 0 && currentLevel === 4) pet_intensity -= 0.5; }, 100);
+};
+document.getElementById('pet-zone').addEventListener('mousemove', petHandler);
+document.getElementById('pet-zone').addEventListener('touchmove', petHandler);
+setInterval(() => { if(pet_intensity > 0) pet_intensity -= 0.8; }, 100);
 
 function initL5() { puzzle_order.sort(() => Math.random() - 0.5); renderPuzzle(); }
 function renderPuzzle() {
@@ -289,8 +273,8 @@ function renderPuzzle() {
     board.innerHTML = '';
     puzzle_order.forEach((pos, slot) => {
         const tile = document.createElement('div');
-        tile.className = 'tile';
-        if(selected_tile === slot) tile.classList.add('selected');
+        tile.className = 'tile'; tile.style.position = 'relative'; tile.style.overflow = 'hidden';
+        if(selected_tile === slot) tile.style.outline = '2px solid red';
         const v = document.createElement('video');
         v.src = 'standing.mp4'; v.autoplay = true; v.loop = true; v.muted = true;
         v.style.top = `-${Math.floor(pos / 3) * 100}%`; v.style.left = `-${(pos % 3) * 100}%`;
@@ -300,12 +284,8 @@ function renderPuzzle() {
                 [puzzle_order[selected_tile], puzzle_order[slot]] = [puzzle_order[slot], puzzle_order[selected_tile]];
                 selected_tile = null; renderPuzzle(); 
                 if(puzzle_order.every((v,i)=>v===i)) {
-                    document.getElementById('puzzle-status').innerText = "MAGNIFIQUE...";
-                    setTimeout(() => {
-                        document.getElementById('hud').style.display = 'none';
-                        document.getElementById('level-5').style.display = 'none';
-                        document.getElementById('end-page').style.display = 'flex';
-                    }, 3000);
+                    document.getElementById('puzzle-status').innerText = "MAGNIFIQUE";
+                    setTimeout(() => { document.getElementById('level-5').style.display = 'none'; document.getElementById('end-page').style.display = 'flex'; }, 3000);
                 }
             }
         };
