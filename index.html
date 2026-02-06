@@ -13,81 +13,43 @@
         }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--black); font-family: "Times New Roman", serif; overflow: hidden; color: white; -webkit-tap-highlight-color: transparent; }
 
-        /* HUD */
         #hud { position: fixed; top: 20px; left: 20px; color: var(--gold); z-index: 100; letter-spacing: 3px; font-size: 10px; display: none; }
         .game-level { display: none; width: 100vw; height: 100vh; position: relative; flex-direction: column; align-items: center; justify-content: center; transition: background 0.5s ease; }
         .active { display: flex; }
 
         video { height: 75vh; width: auto; max-width: 100%; transition: filter 0.2s; z-index: 2; object-fit: contain; }
 
-        @media (max-width: 768px) {
-            video { height: auto; width: 90vw; }
-        }
-
-        /* Level 1 Specific */
+        /* Level 1 */
         #level-1 video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         #canvas-l1 { position: absolute; top: 0; left: 0; z-index: 10; cursor: crosshair; touch-action: none; }
 
-        /* Level 2: Immersive Spotlight */
+        /* Level 2 */
         #level-2 { background: var(--cartier-red) !important; }
         #v2-container { 
-            position: absolute; 
-            width: 150px; 
-            height: 150px; 
-            overflow: hidden; 
-            border-radius: 50%; 
-            border: 1px solid var(--white); 
-            z-index: 20; 
-            display: none; 
-            filter: brightness(0); 
-            transition: filter 0.2s ease, left 1.5s ease-in-out, top 1.5s ease-in-out;
+            position: absolute; width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 1px solid var(--white); 
+            z-index: 20; display: none; filter: brightness(0); transition: filter 0.2s ease, left 1.5s ease-in-out, top 1.5s ease-in-out;
         }
         #v2-container video { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-        #spot-mask { position: absolute; inset: 0; background: radial-gradient(circle 120px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.98) 100%); z-index: 15; pointer-events: none; }
+        #spot-mask { position: absolute; inset: 0; background: radial-gradient(circle 140px at var(--x) var(--y), transparent 20%, rgba(128, 27, 43, 0.98) 100%); z-index: 15; pointer-events: none; }
 
-        /* Level 3 Choice Menu */
+        /* Level 3 */
         #l3-choice-menu { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .choice-btn { margin: 10px; padding: 12px 30px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; cursor: pointer; }
 
-        /* Level 4: Petting */
-        #pet-zone { position: absolute; width: 80%; height: 60%; z-index: 30; touch-action: none; }
-        .purr-meter { width: 250px; height: 4px; background: rgba(255,255,255,0.1); margin-top: 20px; border-radius: 10px; overflow: hidden; z-index: 10; }
-        #purr-fill { width: 0%; height: 100%; background: var(--gold); }
-
-        /* Level 5: Fixed Puzzle */
-        #level-5 { background: var(--white) !important; color: var(--cartier-red); }
+        /* Level 5 */
         #puzzle-board { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            width: 80vh; 
-            height: 80vh; 
-            max-width: 90vw;
-            max-height: 90vw;
-            gap: 1px; 
-            background: var(--cartier-red); 
-            border: 2px solid var(--cartier-red); 
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); 
+            width: 80vh; height: 80vh; max-width: 90vw; max-height: 90vw; gap: 1px; 
+            background: var(--cartier-red); border: 2px solid var(--cartier-red); 
         }
         .tile { position: relative; overflow: hidden; cursor: pointer; background: #000; }
-        .tile video { 
-            position: absolute; 
-            width: 300%; 
-            height: 300%; 
-            pointer-events: none; 
-            object-fit: fill; 
-        }
+        .tile video { position: absolute; width: 300%; height: 300%; pointer-events: none; object-fit: fill; }
         .tile.selected { outline: 3px solid var(--gold); z-index: 10; }
 
-        /* Gates */
         #start-gate { 
-            position: fixed; inset: 0; z-index: 1000; 
-            display: flex; justify-content: center; align-items: center; 
-            background-color: var(--cartier-red); 
-            background-image: url('logo.jpeg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            cursor: pointer;
+            position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; 
+            background-color: var(--cartier-red); background-image: url('logo.jpeg'); background-size: contain;
+            background-repeat: no-repeat; background-position: center; cursor: pointer;
         }
     </style>
 </head>
@@ -95,7 +57,7 @@
 
 <div id="start-gate" onclick="showStartButton()"></div>
 <div id="btn-gate" style="position:fixed; inset:0; z-index:1000; display:none; flex-direction:column; justify-content:center; align-items:center; background:var(--black);">
-    <button class="start-btn" style="padding: 15px 40px; border: 1px solid var(--gold); color: var(--gold); background: none; text-transform: uppercase; cursor: pointer;" onclick="nextLevel()">Play Odyssey</button>
+    <button class="choice-btn" style="font-size: 16px; padding: 15px 40px;" onclick="nextLevel()">Play Odyssey</button>
 </div>
 <div id="hud">GAME: <span id="lvl-num">1</span>/5</div>
 
@@ -117,7 +79,7 @@
     <video id="v3-fullscreen" playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:none;"></video>
     <div class="l3-ui-overlay" id="l3-ui-container" style="text-align:center; z-index:10;">
         <div class="input-display" id="l3-input" style="font-size:32px; margin-bottom:10px;">_</div>
-        <div style="font-size:12px; letter-spacing:2px;">TYPE: RED | WHITE | GOLD</div>
+        <div style="font-size:12px; letter-spacing:2px; color: var(--white);">TAP TO TYPE: RED | WHITE | GOLD</div>
         <input type="text" id="mobile-input" style="opacity:0; position:absolute; pointer-events:none;">
     </div>
     <div id="l3-choice-menu">
@@ -128,7 +90,7 @@
 
 <div class="game-level" id="level-4">
     <video id="v4" playsinline autoplay loop muted><source id="s4" src="standing.mp4" type="video/mp4"></video>
-    <div id="pet-zone"></div>
+    <div id="pet-zone" style="position:absolute; width:100%; height:100%; z-index:30;"></div>
     <div class="purr-meter"><div id="purr-fill"></div></div>
     <div style="color:var(--gold); margin-top:10px; font-size:12px; letter-spacing:1px;">Pet the Panthère</div>
 </div>
@@ -144,64 +106,41 @@
 </div>
 
 <script>
-let currentLevel = 0;
-let l2_finds = 0;
-let pet_intensity = 0;
-let puzzle_order = [0,1,2,3,4,5,6,7,8];
-let selected_tile = null;
-let isLevelTransitioning = false;
-let runInterval;
-let l3_buffer = "";
+let currentLevel = 0, l2_finds = 0, pet_intensity = 0, puzzle_order = [0,1,2,3,4,5,6,7,8];
+let selected_tile = null, isLevelTransitioning = false, runInterval, l3_buffer = "";
 
-function showStartButton() {
-    document.getElementById('start-gate').style.display = 'none';
-    document.getElementById('btn-gate').style.display = 'flex';
-}
+function showStartButton() { document.getElementById('start-gate').style.display = 'none'; document.getElementById('btn-gate').style.display = 'flex'; }
 
 function nextLevel() {
-    currentLevel++;
-    isLevelTransitioning = false;
-    document.getElementById('btn-gate').style.display = 'none';
-    document.getElementById('hud').style.display = 'block';
+    currentLevel++; isLevelTransitioning = false;
+    document.getElementById('btn-gate').style.display = 'none'; document.getElementById('hud').style.display = 'block';
     document.querySelectorAll('.game-level').forEach(l => l.classList.remove('active'));
     document.getElementById(`level-${currentLevel}`).classList.add('active');
     document.getElementById('lvl-num').innerText = currentLevel;
-
-    if(currentLevel === 1) initL1();
-    if(currentLevel === 2) startPantherRun();
-    if(currentLevel === 3) {
-        document.getElementById('l3-ui-container').onclick = () => document.getElementById('mobile-input').focus();
-    }
+    if(currentLevel === 1) initL1(); if(currentLevel === 2) startPantherRun();
+    if(currentLevel === 3) document.getElementById('l3-ui-container').onclick = () => document.getElementById('mobile-input').focus();
     if(currentLevel === 5) initL5();
 }
 
 function initL1() {
-    const c = document.getElementById('canvas-l1');
-    const ctx = c.getContext('2d');
+    const c = document.getElementById('canvas-l1'); const ctx = c.getContext('2d');
     c.width = window.innerWidth; c.height = window.innerHeight;
     ctx.fillStyle = '#801B2B'; ctx.fillRect(0,0,c.width,c.height);
     ctx.globalCompositeOperation = 'destination-out';
-    const handleMove = (e) => {
-        const x = e.touches ? e.touches[0].clientX : e.clientX;
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
+    const hM = (e) => {
+        const x = e.touches ? e.touches[0].clientX : e.clientX; const y = e.touches ? e.touches[0].clientY : e.clientY;
         ctx.beginPath(); ctx.arc(x, y, 70, 0, Math.PI * 2); ctx.fill();
         document.getElementById('n1').style.display = 'block';
     };
-    c.addEventListener('mousemove', handleMove);
-    c.addEventListener('touchmove', handleMove);
+    c.addEventListener('mousemove', hM); c.addEventListener('touchmove', hM);
 }
 
-function startPantherRun() {
-    document.getElementById('v2-container').style.display = 'block';
-    movePanther();
-    runInterval = setInterval(movePanther, 2000);
-}
-
+function startPantherRun() { document.getElementById('v2-container').style.display = 'block'; movePanther(); runInterval = setInterval(movePanther, 2000); }
 function movePanther() {
     if(currentLevel !== 2) { clearInterval(runInterval); return; }
     const cont = document.getElementById('v2-container');
-    cont.style.left = (Math.random() * (window.innerWidth - 160) + 80) + 'px';
-    cont.style.top = (Math.random() * (window.innerHeight - 160) + 80) + 'px';
+    cont.style.left = (Math.random() * (window.innerWidth - 180) + 90) + 'px';
+    cont.style.top = (Math.random() * (window.innerHeight - 180) + 90) + 'px';
 }
 
 window.addEventListener('mousemove', (e) => {
@@ -210,122 +149,75 @@ window.addEventListener('mousemove', (e) => {
         document.documentElement.style.setProperty('--y', e.clientY + 'px');
         const cont = document.getElementById('v2-container');
         const rect = cont.getBoundingClientRect();
-        const dist = Math.hypot(e.clientX - (rect.left + 75), e.clientY - (rect.top + 75));
-        cont.style.filter = dist < 120 ? "brightness(1.5)" : "brightness(0)";
+        const dist = Math.hypot(e.clientX - (rect.left + 80), e.clientY - (rect.top + 80));
+        cont.style.filter = dist < 140 ? "brightness(1.5)" : "brightness(0)";
     }
 });
 
 function catchPanther() {
-    l2_finds++;
-    document.getElementById('l2-text').innerText = `Find the Panthère (${l2_finds}/3)`;
+    l2_finds++; document.getElementById('l2-text').innerText = `Find the Panthère (${l2_finds}/3)`;
     if(l2_finds >= 3) { clearInterval(runInterval); setTimeout(nextLevel, 500); } else movePanther();
 }
 
 window.addEventListener('keydown', (e) => {
     if(currentLevel === 3 && !isLevelTransitioning) {
-        if(e.key.length === 1 && e.key.match(/[a-z]/i)) {
-            l3_buffer += e.key.toUpperCase();
-            processType(l3_buffer);
-        }
+        if(e.key.length === 1 && e.key.match(/[a-z]/i)) { l3_buffer += e.key.toUpperCase(); processType(l3_buffer); }
+        if(e.key === "Backspace") { l3_buffer = l3_buffer.slice(0, -1); processType(l3_buffer); }
     }
 });
 
-document.getElementById('mobile-input').addEventListener('input', (e) => {
-    if(currentLevel === 3) {
-        l3_buffer = e.target.value.toUpperCase();
-        processType(l3_buffer);
-    }
-});
+document.getElementById('mobile-input').addEventListener('input', (e) => { if(currentLevel === 3) { l3_buffer = e.target.value.toUpperCase(); processType(l3_buffer); } });
 
 function processType(val) {
     document.getElementById('l3-input').innerText = val || "_";
-    let vid = "";
-    if(val.includes("RED")) vid = "redpaint.mp4";
-    else if(val.includes("WHITE")) vid = "whitepaint.mp4";
-    else if(val.includes("GOLD")) vid = "goldpaint.mp4";
-
+    let vid = val.includes("RED") ? "redpaint.mp4" : val.includes("WHITE") ? "whitepaint.mp4" : val.includes("GOLD") ? "goldpaint.mp4" : "";
     if(vid) {
         isLevelTransitioning = true;
-        document.getElementById('mobile-input').value = "";
-        document.getElementById('mobile-input').blur();
         const v3 = document.getElementById('v3-fullscreen');
+        v3.src = vid; v3.style.display = 'block';
         document.getElementById('l3-ui-container').style.display = 'none';
-        v3.style.display = 'block'; v3.src = vid; v3.play();
+        v3.load();
+        let playPromise = v3.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => { v3.muted = true; v3.play(); });
+        }
         v3.onended = () => document.getElementById('l3-choice-menu').style.display = 'flex';
     }
 }
 
-function resetL3() {
-    l3_buffer = ""; isLevelTransitioning = false;
-    document.getElementById('l3-input').innerText = "_";
-    document.getElementById('v3-fullscreen').style.display = 'none';
-    document.getElementById('l3-choice-menu').style.display = 'none';
-    document.getElementById('l3-ui-container').style.display = 'block';
-}
+function resetL3() { l3_buffer = ""; isLevelTransitioning = false; document.getElementById('l3-input').innerText = "_"; document.getElementById('v3-fullscreen').style.display = 'none'; document.getElementById('l3-choice-menu').style.display = 'none'; document.getElementById('l3-ui-container').style.display = 'block'; }
 
-const petHandler = () => {
-    if(currentLevel === 4 && !isLevelTransitioning) {
-        pet_intensity += 2;
-        document.getElementById('purr-fill').style.width = Math.min(pet_intensity, 100) + "%";
-        if(pet_intensity >= 100) {
-            isLevelTransitioning = true;
-            const v = document.getElementById('v4');
-            document.getElementById('s4').src = "purr.mp4";
-            v.muted = false; v.loop = false; v.load(); v.play();
-            v.onended = () => nextLevel();
-        }
-    }
+const pht = (e) => { 
+    if(currentLevel === 4 && !isLevelTransitioning) { 
+        pet_intensity += 2.5; 
+        document.getElementById('purr-fill').style.width = Math.min(pet_intensity, 100) + "%"; 
+        if(pet_intensity >= 100) { 
+            isLevelTransitioning = true; 
+            const v = document.getElementById('v4'); 
+            document.getElementById('s4').src = "purr.mp4"; 
+            v.load(); v.muted = false; v.play(); 
+            v.onended = () => nextLevel(); 
+        } 
+    } 
 };
-document.getElementById('pet-zone').addEventListener('mousemove', petHandler);
-document.getElementById('pet-zone').addEventListener('touchmove', petHandler);
-setInterval(() => { if(pet_intensity > 0) pet_intensity -= 0.8; }, 100);
+document.getElementById('pet-zone').addEventListener('mousemove', pht);
+document.getElementById('pet-zone').addEventListener('touchmove', pht);
+setInterval(() => { if(pet_intensity > 0) pet_intensity -= 0.6; }, 100);
 
-function initL5() { 
-    puzzle_order = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5); 
-    renderPuzzle(); 
-}
-
+function initL5() { puzzle_order = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5); renderPuzzle(); }
 function renderPuzzle() {
-    const board = document.getElementById('puzzle-board');
-    board.innerHTML = '';
+    const board = document.getElementById('puzzle-board'); board.innerHTML = '';
     puzzle_order.forEach((pos, slot) => {
-        const tile = document.createElement('div');
-        tile.className = 'tile' + (selected_tile === slot ? ' selected' : '');
-        
-        const v = document.createElement('video');
-        v.src = 'standing.mp4';
-        v.autoplay = true;
-        v.loop = true;
-        v.muted = true;
-        v.setAttribute('playsinline', '');
-        v.setAttribute('webkit-playsinline', '');
-        
-        // Correct positioning of video fragments
-        const row = Math.floor(pos / 3);
-        const col = pos % 3;
-        v.style.top = `-${row * 100}%`;
-        v.style.left = `-${col * 100}%`;
-        
+        const tile = document.createElement('div'); tile.className = 'tile' + (selected_tile === slot ? ' selected' : '');
+        const v = document.createElement('video'); v.src = 'standing.mp4'; v.autoplay = true; v.loop = true; v.muted = true; v.setAttribute('playsinline', '');
+        const row = Math.floor(pos / 3); const col = pos % 3; v.style.top = `-${row * 100}%`; v.style.left = `-${col * 100}%`;
         tile.onclick = () => {
-            if(selected_tile === null) { 
-                selected_tile = slot; 
-                renderPuzzle(); 
-            } else { 
-                [puzzle_order[selected_tile], puzzle_order[slot]] = [puzzle_order[slot], puzzle_order[selected_tile]];
-                selected_tile = null; 
-                renderPuzzle(); 
-                if(puzzle_order.every((v,i)=>v===i)) {
-                    document.getElementById('puzzle-status').innerText = "MAGNIFIQUE";
-                    setTimeout(() => { 
-                        document.getElementById('level-5').style.display = 'none'; 
-                        document.getElementById('hud').style.display = 'none';
-                        document.getElementById('end-page').style.display = 'flex'; 
-                    }, 3000);
-                }
+            if(selected_tile === null) { selected_tile = slot; renderPuzzle(); } 
+            else { [puzzle_order[selected_tile], puzzle_order[slot]] = [puzzle_order[slot], puzzle_order[selected_tile]]; selected_tile = null; renderPuzzle(); 
+                if(puzzle_order.every((v,i)=>v===i)) { document.getElementById('puzzle-status').innerText = "MAGNIFIQUE"; setTimeout(() => { document.getElementById('level-5').style.display = 'none'; document.getElementById('hud').style.display = 'none'; document.getElementById('end-page').style.display = 'flex'; }, 3000); }
             }
         };
-        tile.appendChild(v);
-        board.appendChild(tile);
+        tile.appendChild(v); board.appendChild(tile);
     });
 }
 </script>
