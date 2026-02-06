@@ -64,13 +64,19 @@
             height: 80vh; 
             max-width: 90vw;
             max-height: 90vw;
-            gap: 2px; 
+            gap: 1px; 
             background: var(--cartier-red); 
             border: 2px solid var(--cartier-red); 
         }
-        .tile { position: relative; overflow: hidden; cursor: pointer; background: #fff; }
-        .tile video { position: absolute; width: 300.5%; height: 300.5%; pointer-events: none; object-fit: cover; }
-        .tile.selected { outline: 4px solid var(--gold); z-index: 10; }
+        .tile { position: relative; overflow: hidden; cursor: pointer; background: #000; }
+        .tile video { 
+            position: absolute; 
+            width: 300%; 
+            height: 300%; 
+            pointer-events: none; 
+            object-fit: fill; 
+        }
+        .tile.selected { outline: 3px solid var(--gold); z-index: 10; }
 
         /* Gates */
         #start-gate { 
@@ -121,7 +127,7 @@
 </div>
 
 <div class="game-level" id="level-4">
-    <video id="v4" playsinline autoplay loop><source id="s4" src="standing.mp4" type="video/mp4"></video>
+    <video id="v4" playsinline autoplay loop muted><source id="s4" src="standing.mp4" type="video/mp4"></video>
     <div id="pet-zone"></div>
     <div class="purr-meter"><div id="purr-fill"></div></div>
     <div style="color:var(--gold); margin-top:10px; font-size:12px; letter-spacing:1px;">Pet the Panthère</div>
@@ -215,7 +221,6 @@ function catchPanther() {
     if(l2_finds >= 3) { clearInterval(runInterval); setTimeout(nextLevel, 500); } else movePanther();
 }
 
-// Level 3 Unified Input (Laptop + Mobile)
 window.addEventListener('keydown', (e) => {
     if(currentLevel === 3 && !isLevelTransitioning) {
         if(e.key.length === 1 && e.key.match(/[a-z]/i)) {
@@ -275,28 +280,52 @@ document.getElementById('pet-zone').addEventListener('mousemove', petHandler);
 document.getElementById('pet-zone').addEventListener('touchmove', petHandler);
 setInterval(() => { if(pet_intensity > 0) pet_intensity -= 0.8; }, 100);
 
-function initL5() { puzzle_order.sort(() => Math.random() - 0.5); renderPuzzle(); }
+function initL5() { 
+    puzzle_order = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5); 
+    renderPuzzle(); 
+}
+
 function renderPuzzle() {
     const board = document.getElementById('puzzle-board');
     board.innerHTML = '';
     puzzle_order.forEach((pos, slot) => {
         const tile = document.createElement('div');
         tile.className = 'tile' + (selected_tile === slot ? ' selected' : '');
+        
         const v = document.createElement('video');
-        v.src = 'standing.mp4'; v.autoplay = true; v.loop = true; v.muted = true;
-        v.style.top = `-${Math.floor(pos / 3) * 100}%`; v.style.left = `-${(pos % 3) * 100}%`;
+        v.src = 'standing.mp4';
+        v.autoplay = true;
+        v.loop = true;
+        v.muted = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+        
+        // Correct positioning of video fragments
+        const row = Math.floor(pos / 3);
+        const col = pos % 3;
+        v.style.top = `-${row * 100}%`;
+        v.style.left = `-${col * 100}%`;
+        
         tile.onclick = () => {
-            if(selected_tile === null) { selected_tile = slot; renderPuzzle(); }
-            else { 
+            if(selected_tile === null) { 
+                selected_tile = slot; 
+                renderPuzzle(); 
+            } else { 
                 [puzzle_order[selected_tile], puzzle_order[slot]] = [puzzle_order[slot], puzzle_order[selected_tile]];
-                selected_tile = null; renderPuzzle(); 
+                selected_tile = null; 
+                renderPuzzle(); 
                 if(puzzle_order.every((v,i)=>v===i)) {
                     document.getElementById('puzzle-status').innerText = "MAGNIFIQUE";
-                    setTimeout(() => { document.getElementById('level-5').style.display = 'none'; document.getElementById('end-page').style.display = 'flex'; }, 3000);
+                    setTimeout(() => { 
+                        document.getElementById('level-5').style.display = 'none'; 
+                        document.getElementById('hud').style.display = 'none';
+                        document.getElementById('end-page').style.display = 'flex'; 
+                    }, 3000);
                 }
             }
         };
-        tile.appendChild(v); board.appendChild(tile);
+        tile.appendChild(v);
+        board.appendChild(tile);
     });
 }
 </script>
